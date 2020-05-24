@@ -1,0 +1,18 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'application'
+
+
+mainClassName = 'io.plotnik.entran.EnTranFrame'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    testImplementation     'junit:junit:4.13'
+}
+
+task readme(type: Exec) {
+    commandLine 'asciidoctor', 'README.adoc'    
+}
