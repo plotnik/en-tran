@@ -134,6 +134,7 @@ public class EnTranFrame extends javax.swing.JFrame {
 
         tranTextArea.setColumns(20);
         tranTextArea.setRows(5);
+        tranTextArea.setWrapStyleWord(true);
         editScrollPane.setViewportView(tranTextArea);
 
         splitPane.setBottomComponent(editScrollPane);
