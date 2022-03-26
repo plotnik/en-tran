@@ -1,18 +1,35 @@
-apply plugin: 'java'
-apply plugin: 'jacoco'
+apply plugin: 'groovy'
 apply plugin: 'application'
 
+//sourceCompatibility = '1.8'
 
-mainClassName = 'io.plotnik.entran.EnTranFrame'
+mainClassName = 'io.plotnik.entran.Main'
 
 repositories {
     jcenter()
 }
 
 dependencies {
-    testImplementation     'junit:junit:4.13'
+    implementation 'org.apache.groovy:groovy:4.0.1'
+    implementation 'info.picocli:picocli-groovy:4.6.3'
+    implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
+    testImplementation 'junit:junit:4.13'
 }
 
+/**
+ * Compile README.adoc
+ */
 task readme(type: Exec) {
-    commandLine 'asciidoctor', 'README.adoc'    
+    commandLine 'asciidoctor', 'README.adoc'
+}
+
+/**
+ * Compile fat jar with all dependencies included.
+ */
+task fatjar(type: Jar) {
+    from {
+        configurations.compileClasspath.filter{ it.exists() }
+            .collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
 }

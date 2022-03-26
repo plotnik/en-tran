@@ -11,28 +11,30 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * Утилита для поиска соответствий между английским оригиналом и русским переводом.
- * 
+ *
  * Для работы с JSON можно использовать GSON:
  * - https://github.com/google/gson
  * - https://mvnrepository.com/artifact/com.google.code.gson/gson
- * 
+ *
  * Вместо TagSoup можно использовать JSoup:
  * - https://jsoup.org/
  * - https://mvnrepository.com/artifact/org.jsoup/jsoup
  * - https://mvnrepository.com/artifact/org.ccil.cowan.tagsoup/tagsoup
- * 
+ *
  * В качестве базы данных можно использовать SQLite:
  * - https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
- */        
+ */
 public class EnTranFrame extends javax.swing.JFrame {
 
     public EnTranFrame() {
         initComponents();
+
         getContentPane().setBackground(Settings.background);
         enText.setBackground(Settings.background);
+
         setLocationRelativeTo(null);
     }
-    
+
     public Font addFont(String ttfFile, int fontSize) throws FontFormatException, IOException {
         Font font = Font.createFont(Font.TRUETYPE_FONT, new File(ttfFile));
         Font sizedFont = font.deriveFont(Font.PLAIN, fontSize);
@@ -40,7 +42,7 @@ public class EnTranFrame extends javax.swing.JFrame {
         ge.registerFont(sizedFont);
         return sizedFont;
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -170,7 +172,7 @@ public class EnTranFrame extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -197,7 +199,7 @@ public class EnTranFrame extends javax.swing.JFrame {
             }
         });
     }
-    
+
     public static void setLookAndFeel(String lfname) {
         for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
             if (lfname.equals(info.getName())) {
@@ -214,7 +216,7 @@ public class EnTranFrame extends javax.swing.JFrame {
                 }
                 break;
             }
-        }        
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
