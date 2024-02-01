@@ -10,9 +10,10 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.apache.groovy:groovy:4.0.1'
-    implementation 'info.picocli:picocli-groovy:4.6.3'
-    implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
+    implementation 'org.apache.groovy:groovy-all:4.0.18'
+    implementation 'info.picocli:picocli-groovy:4.7.5'
+    implementation 'org.xerial:sqlite-jdbc:3.45.1.0'
+    implementation 'org.slf4j:slf4j-nop:2.0.11'
     testImplementation 'junit:junit:4.13'
 }
 
@@ -27,6 +28,11 @@ task readme(type: Exec) {
  * Compile fat jar with all dependencies included.
  */
 task fatjar(type: Jar) {
+    manifest {
+        attributes "Main-Class": "io.plotnik.entran.Main"
+    }
+    archiveBaseName = "en-tran-all"
+    duplicatesStrategy = "include"
     from {
         configurations.compileClasspath.filter{ it.exists() }
             .collect { it.isDirectory() ? it : zipTree(it) }
