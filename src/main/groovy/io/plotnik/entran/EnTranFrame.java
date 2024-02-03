@@ -5,6 +5,7 @@ import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -26,21 +27,55 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class EnTranFrame extends javax.swing.JFrame {
 
-    public EnTranFrame() {
+    TranEngine tranEngine;
+
+    private final static String GOOGLE_FONT = "EBGaramond-VariableFont.ttf";
+    
+    public EnTranFrame() throws FontFormatException, IOException {
+        Font googleFont = addFont("/" + GOOGLE_FONT, 32);
         initComponents();
 
+        tranTextArea.setFont(googleFont);
+        enText.setFont(googleFont);
+                
         getContentPane().setBackground(Settings.background);
         enText.setBackground(Settings.background);
 
         setLocationRelativeTo(null);
     }
 
-    public Font addFont(String ttfFile, int fontSize) throws FontFormatException, IOException {
-        Font font = Font.createFont(Font.TRUETYPE_FONT, new File(ttfFile));
-        Font sizedFont = font.deriveFont(Font.PLAIN, fontSize);
+    Font addFont(String ttfFile, float fontSize) throws FontFormatException, IOException {
+
+        // Load the font
+        InputStream is = getClass().getResourceAsStream(ttfFile);
+        Font font = Font.createFont(Font.TRUETYPE_FONT, is);
+        // Scale the font
+        Font scaledFont = font.deriveFont(Font.PLAIN, fontSize);
+
+        // Font font = Font.createFont(Font.TRUETYPE_FONT, new File(ttfFile));
+
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        ge.registerFont(sizedFont);
-        return sizedFont;
+        ge.registerFont(scaledFont);
+        return scaledFont;
+    } 
+
+    void updateScreenText(boolean updateTextArea) {
+        Sentence enSent = tranEngine.findParagraphEn();
+        Sentence ruSent = tranEngine.findParagraphRu();
+        
+        enText.setText("EN." + enSent.getI() + ": " + enSent.getS() + 
+                   "\n\nRU." + ruSent.getI() + ": " + ruSent.getS());
+
+        if (updateTextArea) {
+            tranTextArea.setText(tranEngine.getRuText());
+        }
+                
+        tranTextArea.setText(tranTextArea.getText().trim());          
+    }
+
+    public void setTranEngine(TranEngine tranEngine) {
+        this.tranEngine = tranEngine;
+        updateScreenText(true);
     }
 
     /**
@@ -195,7 +230,13 @@ public class EnTranFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new EnTranFrame().setVisible(true);
+                try {
+                    new EnTranFrame().setVisible(true);
+                } catch (FontFormatException ex) {
+                    Logger.getLogger(EnTranFrame.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(EnTranFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
