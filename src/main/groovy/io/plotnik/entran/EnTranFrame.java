@@ -31,6 +31,8 @@ public class EnTranFrame extends javax.swing.JFrame {
 
     private final static String GOOGLE_FONT = "EBGaramond-VariableFont.ttf";
     
+    private final static boolean verbose = Main.verbose;
+
     public EnTranFrame() throws FontFormatException, IOException {
         Font googleFont = addFont("/" + GOOGLE_FONT, 32);
         initComponents();
@@ -45,14 +47,11 @@ public class EnTranFrame extends javax.swing.JFrame {
     }
 
     Font addFont(String ttfFile, float fontSize) throws FontFormatException, IOException {
-
         // Load the font
         InputStream is = getClass().getResourceAsStream(ttfFile);
         Font font = Font.createFont(Font.TRUETYPE_FONT, is);
         // Scale the font
         Font scaledFont = font.deriveFont(Font.PLAIN, fontSize);
-
-        // Font font = Font.createFont(Font.TRUETYPE_FONT, new File(ttfFile));
 
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         ge.registerFont(scaledFont);
@@ -63,8 +62,13 @@ public class EnTranFrame extends javax.swing.JFrame {
         Sentence enSent = tranEngine.findParagraphEn();
         Sentence ruSent = tranEngine.findParagraphRu();
         
-        enText.setText("EN." + enSent.getI() + ": " + enSent.getS() + 
-                   "\n\nRU." + ruSent.getI() + ": " + ruSent.getS());
+        if (verbose) {
+            enText.setText("<html>" +
+                    "<p>EN." + enSent.getI() + ": " + enSent.getS() + "</p>" +
+                    "<p>RU." + ruSent.getI() + ": " + ruSent.getS() + "</p>");
+        } else {
+            enText.setText("<html>" + enSent.getS());
+        }
 
         if (updateTextArea) {
             tranTextArea.setText(tranEngine.getRuText());
@@ -170,6 +174,7 @@ public class EnTranFrame extends javax.swing.JFrame {
         splitPane.setTopComponent(textScrollPane);
 
         tranTextArea.setColumns(20);
+        tranTextArea.setLineWrap(true);
         tranTextArea.setRows(5);
         tranTextArea.setWrapStyleWord(true);
         editScrollPane.setViewportView(tranTextArea);
