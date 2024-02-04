@@ -19,8 +19,8 @@ class TranEngine {
     int enPos = 1;
     int ruPos = 1;
 
-    List enPar;
-    List ruPar;
+    List<String> enPar = [];
+    List<String> ruPar = [];
 
     String enLine;
     String ruLine;
@@ -43,7 +43,24 @@ class TranEngine {
         def driver = 'org.sqlite.JDBC'
 
         sql = Sql.newInstance(url, user, password, driver)
+        
+        // Extract paragraphs from db
+        def rows = sql.rows "select * from Tran"
+        for (row in rows) {
+            enPar << row['en']
+            ruPar << row['ru']
+        }
 
+        stateFileName = databaseName + ".json"
+        readStateFile()
+    }
+    
+    void initDatabase() {
+
+        String databaseFile = databaseName + '.tran.db'
+        if (new File(databaseFile).exists() && !verbose) {
+            throw new RuntimeException("Database already exists: " + databaseFile);
+        }
         // Read CSS classes for paragraphs
         
         String configFile = databaseName + ".yml"
@@ -67,16 +84,8 @@ class TranEngine {
         if (verbose) {
             println "ruPar size: ${ruPar.size()}"
         }
-        
-        stateFileName = databaseName + ".json"
-        readStateFile()
-    }
-    
-    void initDatabase() {
-        String databaseFile = databaseName + '.tran.db'
-        if (new File(databaseFile).exists() && !verbose) {
-            throw new RuntimeException("Database already exists: " + databaseFile);
-        }
+
+        // Init DB
 
         sql.execute '''
         drop table if exists Tran;
@@ -97,7 +106,8 @@ class TranEngine {
         println "Done"
     }
 
-    List extractParagraphs(tree, para) {
+    // List of paragraphs
+    List<String> extractParagraphs(tree, para) {
         List result = []
         tree.'**'.each { em -> 
             if (em instanceof Node) {
@@ -121,12 +131,19 @@ class TranEngine {
     }
 
     String getRuText() {
-        def res = sql.firstRow "select ru from Tran where id=${ruPos}"
-        return res?.ru
+        def res = sql.firstRow "select ru from Tran where id=${enPos}"
+        String ruText = res?.ru
+        if (verbose) {
+            println "----- getRuText: en: ${enPos}: ru: ${ruPos}: ${ruText}\n-----"
+        }
+        return ruText
     }
 
     void storeTran(int k, String en, String ru) {
         sql.execute "replace into Tran (id, en, ru) values ($k, $en, $ru)"
+        if (verbose) {
+            println "===== storeTran: replace into Tran (id, en, ru) values ($k, $en, $ru)\n====="
+        }
     }
 
     String bold(String s) {
@@ -193,21 +210,25 @@ class TranEngine {
 
 
         configureButton(frame.addButton, "F11", "+", {
-            println "ruLine: $ruLine"
+            if (verbose) {   
+                println "ruLine: $ruLine"
+            }
             frame.tranTextArea.text = (frame.tranTextArea.text + '\n' + wordbreak(ruLine)).trim() 
         })
 
-
+        // Save ru text and move to the next sentence.
         configureButton(frame.addNextButton, "F12", ">", {
-            println "ruLine: $ruLine"
-            frame.tranTextArea.text = (frame.tranTextArea.text + '\n' + wordbreak(ruLine)).trim() 
+            if (verbose) {    
+                println "ruLine: $ruLine"
+            }
+            frame.tranTextArea.text = frame.tranTextArea.text.trim() 
             
             storeTran(enPos, enLine, frame.tranTextArea.text)
             
             enPos++
             ruPos++
             new File(stateFileName).text = JsonOutput.toJson(["en":enPos, "ru":ruPos])
-            updateScreenText(true)
+            frame.updateScreenText(true)
         })
     }
 

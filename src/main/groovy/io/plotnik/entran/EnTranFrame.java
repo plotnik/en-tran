@@ -61,20 +61,19 @@ public class EnTranFrame extends javax.swing.JFrame {
     void updateScreenText(boolean updateTextArea) {
         Sentence enSent = tranEngine.findParagraphEn();
         Sentence ruSent = tranEngine.findParagraphRu();
+        String ruText = tranEngine.getRuText();
         
         if (verbose) {
-            enText.setText("<html>" +
-                    "<p>EN." + enSent.getI() + ": " + enSent.getS() + "</p>" +
-                    "<p>RU." + ruSent.getI() + ": " + ruSent.getS() + "</p>");
+            enText.setText("EN." + tranEngine.getEnPos() + ".RU." + tranEngine.getRuPos() + ": " + enSent.getS());
         } else {
-            enText.setText("<html>" + enSent.getS());
+            enText.setText(enSent.getS());
         }
 
         if (updateTextArea) {
-            tranTextArea.setText(tranEngine.getRuText());
+            tranTextArea.setText(ruText);
+        } else {
+            tranTextArea.setText(ruSent.getS());  
         }
-                
-        tranTextArea.setText(tranTextArea.getText().trim());          
     }
 
     public void setTranEngine(TranEngine tranEngine) {
@@ -100,10 +99,10 @@ public class EnTranFrame extends javax.swing.JFrame {
         prevButton = new javax.swing.JButton();
         aboutButton = new javax.swing.JButton();
         splitPane = new javax.swing.JSplitPane();
-        textScrollPane = new javax.swing.JScrollPane();
-        enText = new javax.swing.JLabel();
         editScrollPane = new javax.swing.JScrollPane();
         tranTextArea = new javax.swing.JTextArea();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        enText = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("EN TRAN");
@@ -163,16 +162,6 @@ public class EnTranFrame extends javax.swing.JFrame {
         splitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         splitPane.setResizeWeight(1.0);
 
-        textScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-        enText.setFont(new java.awt.Font("Liberation Serif", 0, 24)); // NOI18N
-        enText.setText("en text");
-        enText.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        enText.setOpaque(true);
-        textScrollPane.setViewportView(enText);
-
-        splitPane.setTopComponent(textScrollPane);
-
         tranTextArea.setColumns(20);
         tranTextArea.setLineWrap(true);
         tranTextArea.setRows(5);
@@ -180,6 +169,15 @@ public class EnTranFrame extends javax.swing.JFrame {
         editScrollPane.setViewportView(tranTextArea);
 
         splitPane.setBottomComponent(editScrollPane);
+
+        enText.setEditable(false);
+        enText.setColumns(20);
+        enText.setLineWrap(true);
+        enText.setRows(5);
+        enText.setWrapStyleWord(true);
+        jScrollPane1.setViewportView(enText);
+
+        splitPane.setTopComponent(jScrollPane1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -271,13 +269,13 @@ public class EnTranFrame extends javax.swing.JFrame {
     public javax.swing.JButton addNextButton;
     private javax.swing.JPanel buttonPanel;
     public javax.swing.JScrollPane editScrollPane;
-    public javax.swing.JLabel enText;
+    private javax.swing.JTextArea enText;
+    private javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JButton nextButton;
     public javax.swing.JButton nextRuButton;
     public javax.swing.JButton prevButton;
     public javax.swing.JButton prevRuButton;
     public javax.swing.JSplitPane splitPane;
-    public javax.swing.JScrollPane textScrollPane;
     public javax.swing.JTextArea tranTextArea;
     // End of variables declaration//GEN-END:variables
 }
