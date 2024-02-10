@@ -28,8 +28,8 @@ public class Main implements Callable<Integer> {
     @Option(names = {"-r", "--ru-file"}, description = "HTML file with Russian text")
     String ruFile = "ru/index.html";
 
-    @Option(names = {"-i", "--init-db"}, description = "Initialize database")
-    boolean initDatabase;
+    // @Option(names = {"-i", "--init-db"}, description = "Initialize database")
+    // boolean initDatabase;
 
     @Option(names = {"-v", "--verbose"}, description = "Verbose mode")
     static boolean verbose;
@@ -38,9 +38,9 @@ public class Main implements Callable<Integer> {
     public Integer call() throws Exception {
         try {
             TranEngine tranEngine = new TranEngine(databaseName, enFile, ruFile);
-            if (initDatabase) {
-                tranEngine.initDatabase();
-            }
+            // if (initDatabase) {
+            //     tranEngine.initDatabase();
+            // }
 
             EnTranFrame.setLookAndFeel("Nimbus");
             EnTranFrame frame = new EnTranFrame();

@@ -8,7 +8,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.UnsupportedLookAndFeelException;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 
 /**
  * Утилита для поиска соответствий между английским оригиналом и русским переводом.
@@ -40,10 +48,30 @@ public class EnTranFrame extends javax.swing.JFrame {
         tranTextArea.setFont(googleFont);
         enText.setFont(googleFont);
                 
+        fixCopyPasteKeysOnMac(enText);
+        fixCopyPasteKeysOnMac(tranTextArea);
+
         getContentPane().setBackground(Settings.background);
         enText.setBackground(Settings.background);
 
         setLocationRelativeTo(null);
+    }
+
+    void fixCopyPasteKeysOnMac(JTextArea textArea) {
+        // Get the InputMap of the JTextArea when it is in focused window
+        InputMap inputMap = textArea.getInputMap(JComponent.WHEN_FOCUSED);
+        // Get the ActionMap of the JTextArea
+        ActionMap actionMap = textArea.getActionMap();
+
+        // Define the Command+C keystroke for copy
+        KeyStroke copyKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
+        // Map the Command+C keystroke to the "copy" action in the JTextArea
+        inputMap.put(copyKeyStroke, "copy");
+
+        // Likewise, define the Command+V keystroke for paste
+        KeyStroke pasteKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
+        // Map the Command+V keystroke to the "paste" action in the JTextArea
+        inputMap.put(pasteKeyStroke, "paste");
     }
 
     Font addFont(String ttfFile, float fontSize) throws FontFormatException, IOException {
@@ -61,18 +89,22 @@ public class EnTranFrame extends javax.swing.JFrame {
     void updateScreenText(boolean updateTextArea) {
         Sentence enSent = tranEngine.findParagraphEn();
         Sentence ruSent = tranEngine.findParagraphRu();
-        String ruText = tranEngine.getRuText();
+        //String ruText = tranEngine.getRuText();
         
         if (verbose) {
-            enText.setText("EN." + tranEngine.getEnPos() + ".RU." + tranEngine.getRuPos() + ": " + enSent.getS());
+            enText.setText(
+                    "EN." + tranEngine.getEnPos() + 
+                    ".RU." + tranEngine.getRuPos() +
+                    ".DB." + tranEngine.getDbPos() +
+                    ": " + enSent.getS());
         } else {
             enText.setText(enSent.getS());
         }
 
         if (updateTextArea) {
-            tranTextArea.setText(ruText);
-        } else {
             tranTextArea.setText(ruSent.getS());  
+        } else {
+            tranTextArea.setText(tranTextArea.getText() + "\n" + ruSent.getS());  
         }
     }
 
