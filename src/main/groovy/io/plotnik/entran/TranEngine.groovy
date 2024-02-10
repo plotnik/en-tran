@@ -154,13 +154,12 @@ class TranEngine {
     }
 
     void storeTran(String en, String ru) {
-        dbPos++
-        sql.execute("insert into Tran (id, en, ru) values ($dbPos, $en, $ru)")
-
-        // sql.execute "replace into Tran (id, en, ru) values ($k, $en, $ru)"
-        // if (verbose) {
-        //     println "===== storeTran: replace into Tran (id, en, ru) values ($k, $en, $ru)\n====="
-        // }
+        if (enPos >= dbPos) {
+            dbPos++
+            sql.execute("insert into Tran (id, en, ru) values ($dbPos, $en, $ru)")
+        } else {
+            sql.execute "replace into Tran (id, en, ru) values ($enPos, $en, $ru)"
+        }
     }
 
     String bold(String s) {
