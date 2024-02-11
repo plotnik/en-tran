@@ -250,7 +250,7 @@ class TranEngine {
 
         configureButton(frame.addButton, "F11", "+", {
             ruPos++
-            frame.tranTextArea.text = (frame.tranTextArea.text + '\n' + wordbreak(ruLine)).trim() 
+            //frame.tranTextArea.text = (frame.tranTextArea.text + '\n' + wordbreak(ruLine)).trim() 
             frame.updateScreenText(false)
         })
 
