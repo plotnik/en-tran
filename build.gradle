@@ -1,23 +1,41 @@
-apply plugin: 'groovy'
-apply plugin: 'application'
-
-//sourceCompatibility = '1.8'
+plugins {
+    id 'groovy'
+    id 'application'
+}
 
 mainClassName = 'io.plotnik.entran.Main'
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
-    implementation 'org.apache.groovy:groovy-all:4.0.18'
-    implementation 'info.picocli:picocli-groovy:4.7.5'
-    implementation 'org.xerial:sqlite-jdbc:3.45.1.0'
-    implementation 'org.ccil.cowan.tagsoup:tagsoup:1.2.1'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.16.1'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.1'
-    implementation 'org.slf4j:slf4j-nop:2.0.11'
-    testImplementation 'junit:junit:4.13'
+    implementation libs.groovy
+    implementation libs.picocli
+    implementation libs.sqlite
+    implementation libs.tagsoup
+    implementation libs.bundles.jackson
+    implementation libs.slf4j
+
+    testImplementation libs.junit.jupiter
+    testImplementation libs.bundles.mockito
+    testImplementation libs.assertj
+
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+application {
+    mainClass = mainClassName
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
 }
 
 /**
@@ -32,7 +50,7 @@ task readme(type: Exec) {
  */
 task fatjar(type: Jar) {
     manifest {
-        attributes "Main-Class": "io.plotnik.entran.Main"
+        attributes "Main-Class": mainClassName
     }
     archiveBaseName = "en-tran-all"
     duplicatesStrategy = "include"

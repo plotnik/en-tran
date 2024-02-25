@@ -1,0 +1,35 @@
+[versions]
+groovy = "4.0.18"
+picocli = "4.7.5"
+sqlite = "3.45.1.0"
+tagsoup = "1.2.1"
+jackson = "2.16.1"
+slf4j = "2.0.11"
+
+junit-jupiter = "5.10.2"
+mockito = "5.10.0"
+assertj = "3.25.3"
+
+[libraries]
+groovy = { module = "org.apache.groovy:groovy-all", version.ref = "groovy" }
+picocli = { module = "info.picocli:picocli-groovy", version.ref = "picocli" }
+sqlite = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite" }
+tagsoup = { module = "org.ccil.cowan.tagsoup:tagsoup", version.ref = "tagsoup" }
+jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
+jackson-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml", version.ref = "jackson" }
+slf4j = { module = "org.slf4j:slf4j-nop", version.ref = "slf4j" }
+
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockito-junit = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
+assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+
+[bundles]
+mockito = [
+    "mockito-core",
+    "mockito-junit",
+]
+jackson = [
+    "jackson-core",
+    "jackson-yaml",
+]

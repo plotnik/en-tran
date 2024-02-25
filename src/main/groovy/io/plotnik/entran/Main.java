@@ -33,7 +33,10 @@ public class Main implements Callable<Integer> {
 
     @Option(names = {"-v", "--verbose"}, description = "Verbose mode")
     static boolean verbose;
-    
+
+    @Option(names = {"-d", "--dump"}, description = "Dump debug database")
+    static boolean dumpDebugDB;
+
     @Override
     public Integer call() throws Exception {
         try {

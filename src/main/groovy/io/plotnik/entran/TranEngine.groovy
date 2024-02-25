@@ -93,8 +93,39 @@ class TranEngine {
 
         stateFileName = databaseName + ".json"
         readStateFile()
+
+        if (Main.dumpDebugDB) {
+            dumpDebugDB()
+        }
     }
     
+    void dumpDebugDB() {
+        def data = sql.rows("SELECT id,en,ru FROM Tran")
+        
+        def url = 'jdbc:sqlite:' + databaseName + '.debug.db'
+        def user = ''
+        def password = ''
+        def driver = 'org.sqlite.JDBC'
+
+        def sql_2 = Sql.newInstance(url, user, password, driver)
+
+        sql_2.execute '''
+        drop table if exists Cmp_En;
+        '''
+        sql_2.execute '''
+        create table Cmp_En (id integer primary key, db string, par string);
+        '''
+
+        int id = 0
+        for (d: data) {
+            id++
+            String db = d.en
+            String par = enPar[id-1]
+            //println "insert into Cmp_En (id, db, par) values ($id, $db, $par)"
+            sql_2.execute("insert into Cmp_En (id, db, par) values ($id, $db, $par)")
+        }
+    }
+
     void initDatabase() {
         // Init DB
 
